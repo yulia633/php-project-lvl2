@@ -19,13 +19,16 @@ Generate diff
 Usage:
   gendiff (-h|--help)
   gendiff (-v|--version)
+  gendiff [--format <fmt>] <firstFile> <secondFile>
 
 Options:
   -h --help                     Show this screen
   -v --version                  Show version
+  --format <fmt>                Report format [default: stylish]
 DOC;
 
 $args = Docopt::handle(DOC, ['version' => '0.1']);
-foreach ($args as $key => $value) {
-    echo $key . ': ' . json_encode($value) . PHP_EQL;
-}
+$firstFile = $args['<firstFile>'];
+$secondFile = $args['<secondFile>'];
+
+print_r($firstFile, $secondFile);
