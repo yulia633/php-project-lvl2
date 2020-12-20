@@ -1,0 +1,26 @@
+{
+    "name": "yulia633/hexlet-project-2",
+    "bin": [
+         "bin/gendiff"
+    ],
+    "description": "Generate diff",
+    "type": "project",
+    "authors": [
+        {
+            "name": "yulia633,",
+            "email": "ignat633yulia@yandex.ru"
+        }
+    ],
+    "minimum-stability": "stable",
+    "scripts": {
+        "phpcs": "phpcs"
+    },
+    "require": {
+        "php": ">=7.4.3",
+        "docopt/docopt": "^1.0"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.5"
+    },
+    "license": "MIT"
+}
