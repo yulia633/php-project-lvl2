@@ -1,4 +1,4 @@
-name: On lint
+name: PHP CI
 
 on:
   push:
