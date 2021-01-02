@@ -28,3 +28,7 @@ $ bin/gendiff --format plain pathToFile1 pathTofile2
 ### Установка
 Для глобальной установки выполните команду:
 `$ composer global require yulia633/hexlet-project-2`
+
+### Как работает
+Example compare of two json files
+[![asciicast](https://asciinema.org/a/382240.svg)](https://asciinema.org/a/382240)
