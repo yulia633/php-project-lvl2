@@ -3,6 +3,15 @@
     "bin": [
          "bin/gendiff"
     ],
+    "autoload": {
+        "files": [
+            "src/cli.php",
+            "src/differ.php"
+        ],
+        "psr-4": {
+            "Differ\\": "src"
+        }
+    },
     "description": "Generate diff",
     "type": "project",
     "authors": [
