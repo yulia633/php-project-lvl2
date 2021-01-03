@@ -2,7 +2,7 @@
 
 namespace Differ\Differ;
 
-function readFile($filePath)
+function readFile(string $filePath)
 {
     $path = realpath($filePath);
 
@@ -13,7 +13,7 @@ function readFile($filePath)
     return file_get_contents($path);
 }
 
-function genDiff($firstFilePath, $secondFilePath)
+function genDiff(string $firstFilePath, string $secondFilePath)
 {
     $firstContent = readFile($firstFilePath);
     $secondContent = readFile($secondFilePath);
@@ -21,6 +21,11 @@ function genDiff($firstFilePath, $secondFilePath)
     $firstData = json_decode($firstContent, true);
     $secondData = json_decode($secondContent, true);
 
+    return calculate($firstData, $secondData);
+}
+
+function calculate(array $firstData, array $secondData)
+{
     $mergedData = array_merge($firstData, $secondData);
 
     ksort($mergedData);
@@ -49,9 +54,14 @@ function genDiff($firstFilePath, $secondFilePath)
         }
     }
 
+    return render($result);
+}
+
+function render(array $data)
+{
     $string = '';
 
-    foreach ($result as $key => $value) {
+    foreach ($data as $key => $value) {
         $string .= "{$key} => {$value}\n";
     }
 
