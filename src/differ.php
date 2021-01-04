@@ -7,7 +7,7 @@ function readFile(string $filePath)
     $path = realpath($filePath);
 
     if (!file_exists($path)) {
-        throw new \Exception('The file {$path} does not exists.\n');
+        throw new \Exception("The file {$filePath} does not exists.\n");
     }
 
     return file_get_contents($path);
