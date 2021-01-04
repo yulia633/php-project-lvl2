@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 use function Differ\Differ\genDiff;
 
-class ParserTest extends TestCase
+class GenDiffTest extends TestCase
 {
     public function testDiffJsonFlat()
     {
