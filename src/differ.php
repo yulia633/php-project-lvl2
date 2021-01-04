@@ -42,15 +42,15 @@ function calculate(array $firstData, array $secondData)
         }
         if (array_key_exists($key, $secondData) && array_key_exists($key, $firstData)) {
             if ($value === $firstData[$key]) {
-                $result["   {$key}"] = $value;
+                $result["    {$key}"] = $value;
             } else {
-                $result[" - {$key}"] = $firstData[$key];
-                $result[" + {$key}"] = $value;
+                $result["  - {$key}"] = $firstData[$key];
+                $result["  + {$key}"] = $value;
             }
         } elseif (array_key_exists($key, $firstData) && !array_key_exists($key, $secondData)) {
-            $result[" - {$key}"] = $value;
+            $result["  - {$key}"] = $value;
         } else {
-            $result[" + {$key}"] = $value;
+            $result["  + {$key}"] = $value;
         }
     }
 
@@ -62,7 +62,7 @@ function render(array $data)
     $string = '';
 
     foreach ($data as $key => $value) {
-        $string .= "{$key} => {$value}\n";
+        $string .= "{$key}: {$value}\n";
     }
 
     return "{\n{$string}}\n";
