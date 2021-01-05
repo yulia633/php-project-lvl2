@@ -9,7 +9,8 @@
             "src/differ.php"
         ],
         "psr-4": {
-            "Differ\\Tests\\": "tests"
+            "Differ\\Tests\\": "tests",
+            "Differ\\": "src"
         }
     },
     "description": "Generate diff",
