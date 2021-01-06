@@ -2,6 +2,8 @@
 
 namespace Differ\Differ;
 
+use function Differ\Parsers\parse;
+
 function readFile(string $filePath)
 {
     $path = realpath($filePath);
@@ -13,13 +15,13 @@ function readFile(string $filePath)
     return file_get_contents($path);
 }
 
-function genDiff(string $firstFilePath, string $secondFilePath)
+function genDiff(string $firstFilePath, string $secondFilePath, $format = 'json')
 {
     $firstContent = readFile($firstFilePath);
     $secondContent = readFile($secondFilePath);
 
-    $firstData = json_decode($firstContent, true);
-    $secondData = json_decode($secondContent, true);
+    $firstData = parse($firstContent, $format);
+    $secondData = parse($secondContent, $format);
 
     return calculate($firstData, $secondData);
 }

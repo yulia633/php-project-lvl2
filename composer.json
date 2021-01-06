@@ -6,7 +6,8 @@
     "autoload": {
         "files": [
             "src/cli.php",
-            "src/differ.php"
+            "src/differ.php",
+            "src/parsers.php"
         ],
         "psr-4": {
             "Differ\\Tests\\": "tests",
