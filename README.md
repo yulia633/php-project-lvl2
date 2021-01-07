@@ -30,5 +30,5 @@ $ bin/gendiff --format plain pathToFile1 pathTofile2
 `$ composer global require yulia633/hexlet-project-2`
 
 ### Как работает
-Example compare of two json files
-[![asciicast](https://asciinema.org/a/382240.svg)](https://asciinema.org/a/382240)
+Сравнение плоских файлов json и yaml/yml
+[![asciicast](https://asciinema.org/a/383139.svg)](https://asciinema.org/a/383139)
