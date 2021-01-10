@@ -21,4 +21,18 @@ class GenDiffTest extends TestCase
 
         $this->assertStringEqualsFile(__DIR__ . '/fixtures/diff.txt', $diff);
     }
+
+    public function testDiffJsonNest()
+    {
+        $expected = file_get_contents('tests/fixtures/diffNest.txt');
+        $actualJson = genDiff(__DIR__ . '/fixtures/fileNest1.json', __DIR__ . '/fixtures/fileNest2.json');
+        $this->expectOutputString($expected, $actualJson);
+    }
+
+    public function testDiffYamlNest()
+    {
+        $expected = file_get_contents('tests/fixtures/diffNest.txt');
+        $actualYaml = genDiff(__DIR__ . '/fixtures/fileNest1.yml', __DIR__ . '/fixtures/fileNest2.yml');
+        $this->expectOutputString($expected, $actualYaml);
+    }
 }
