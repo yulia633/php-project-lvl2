@@ -6,13 +6,13 @@ use Symfony\Component\Yaml\Yaml;
 
 function parse($data, $type)
 {
-    switch ($type) {
-        case 'json':
-            return json_decode($data, true);
-        case 'yml':
-        case 'yaml':
-            return Yaml::parse($data);
-        default:
-            throw new \Exception("Data type '{$type}' is incorrect or not supported.");
-    }
+    return getExtension()[$type]($data);
+}
+
+function getExtension()
+{
+    return [
+        'json' => fn($data) => json_decode($data, true),
+        'yaml' => fn($data) => Yaml::parse($data, Yaml::PARSE_OBJECT_FOR_MAP),
+    ];
 }
