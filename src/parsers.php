@@ -13,6 +13,8 @@ function getExtension()
 {
     return [
         'json' => fn($data) => json_decode($data, true),
-        'yaml' => fn($data) => Yaml::parse($data, Yaml::PARSE_OBJECT_FOR_MAP),
+        'yml' => fn($data) => Yaml::parse($data, Yaml::PARSE_OBJECT_FOR_MAP),
     ];
+
+    //Todo: возможно тут возвращать в ямл принудительно массив вместо объекта
 }

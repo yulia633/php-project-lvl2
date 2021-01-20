@@ -7,7 +7,8 @@
         "files": [
             "src/cli.php",
             "src/differ.php",
-            "src/parsers.php"
+            "src/parsers.php",
+            "src/formater.php"
         ],
         "psr-4": {
             "Differ\\Tests\\": "tests",
