@@ -5,6 +5,8 @@ namespace Differ\Differ;
 use function Differ\Parsers\parse;
 use function Differ\Formater\format;
 
+use function Funct\Collection\union;
+
 function readFile(string $filePath)
 {
     $path = realpath($filePath);
@@ -31,24 +33,26 @@ function genDiff(string $firstFilePath, string $secondFilePath, $format = 'styli
     return format($ast, $format);
 }
 
-function union(array $firstColl, array $secondColl)
-{
-    return array_unique(array_merge($firstColl, $secondColl));
-}
-
-function genAst(array $firstData, array $secondData)
+function genAst($firstData, $secondData)
 {
     //Todo: возможно тут возвращать принудительно массив вместо объекта
+    $firstData = (array) $firstData;
+    $secondData = (array) $secondData;
 
-    $union = union(array_keys($firstData), array_keys($secondData));
+    //print_r($firstData);//die;
 
-    //ksort($union);
+    //$union = union(array_keys($firstData), array_keys($secondData));
+    $union = array_keys(array_merge($firstData, $secondData));
+   // print_r($union);//die;
+
+   // sort($union);
 
     $ast = array_reduce($union, function ($acc, $item) use ($firstData, $secondData) {
         $acc[] = diffData($item, $firstData, $secondData);
         return $acc;
-    }, []);
+    }, []);    
 
+   // print_r($ast);die;
     return $ast;
 }
 
@@ -93,47 +97,3 @@ function diffData($item, $data1, $data2)
         ];
     }
 }
-
-// function calculate(array $firstData, array $secondData)
-// {
-//     $mergedData = array_merge($firstData, $secondData);
-
-//     ksort($mergedData);
-
-//     $result = [];
-
-//     foreach ($mergedData as $key => $value) {
-//         if (is_bool($value)) {
-//             if ($value === true) {
-//                 $value = 'true';
-//             } else {
-//                 $value = 'false';
-//             }
-//         }
-//         if (array_key_exists($key, $secondData) && array_key_exists($key, $firstData)) {
-//             if ($value === $firstData[$key]) {
-//                 $result["    {$key}"] = $value;
-//             } else {
-//                 $result["  - {$key}"] = $firstData[$key];
-//                 $result["  + {$key}"] = $value;
-//             }
-//         } elseif (array_key_exists($key, $firstData) && !array_key_exists($key, $secondData)) {
-//             $result["  - {$key}"] = $value;
-//         } else {
-//             $result["  + {$key}"] = $value;
-//         }
-//     }
-
-//     return render($result);
-// }
-
-// function render(array $data)
-// {
-//     $string = '';
-
-//     foreach ($data as $key => $value) {
-//         $string .= "{$key}: {$value}\n";
-//     }
-
-//     return "{\n{$string}}\n";
-// }
