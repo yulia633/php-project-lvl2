@@ -2,5 +2,6 @@
 /build/
 *.cache
 testdox.txt
+coverage.txt
 clover.xml
 /xml-coverage/

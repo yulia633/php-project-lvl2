@@ -27,7 +27,7 @@ function json($ast)
 
 function stylish($ast)
 {
-   $result = array_reduce($ast, function ($acc, $node) {
+    $result = array_reduce($ast, function ($acc, $node) {
         $type = $node['type'];
         $key = $node['key'];
         switch ($type) {
@@ -39,21 +39,29 @@ function stylish($ast)
                 break;
             case 'added':
                 $newValue = $node['newValue'];
-                $acc[] = STYLISH_INDENT_BASE . "  + {$key}: " . prepareValue($newValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
+                $acc[] = STYLISH_INDENT_BASE
+                    . "  + {$key}: "
+                    . prepareValue($newValue, STYLISH_INDENT_BASE
+                    . STYLISH_INDENT);
                 break;
             case 'removed':
                 $oldValue = $node['oldValue'];
-                $acc[] = STYLISH_INDENT_BASE . "  - {$key}: " . prepareValue($oldValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
+                $acc[] = STYLISH_INDENT_BASE
+                    . "  - {$key}: "
+                    . prepareValue($oldValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
                 break;
             case 'not updated':
                 $newValue = $node['newValue'];
-                $acc[] = STYLISH_INDENT_BASE . "    {$key}: " . prepareValue($newValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
+                $acc[] = STYLISH_INDENT_BASE
+                    . "    {$key}: " . prepareValue($newValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
                 break;
             case 'updated':
                 $newValue = $node['newValue'];
                 $oldValue = $node['oldValue'];
-                $acc[] = STYLISH_INDENT_BASE . "  - {$key}: " . prepareValue($oldValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
-                $acc[] = STYLISH_INDENT_BASE . "  + {$key}: " . prepareValue($newValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
+                $acc[] = STYLISH_INDENT_BASE
+                    . "  - {$key}: " . prepareValue($oldValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
+                $acc[] = STYLISH_INDENT_BASE
+                    . "  + {$key}: " . prepareValue($newValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
                 break;
             default:
                 throw new Exception("Invalid {$type}.");
@@ -61,11 +69,7 @@ function stylish($ast)
         return $acc;
     }, []);
    // return flattenAll($result);
-   return implode(
-       PHP_EQL,
-       array_merge(['{'], flattenAll($result), ['}']
-       )
-   );
+    return implode(" \n", array_merge(['{'], flattenAll($result), ['}']));
 }
 
 function prepareValue($value, $space = STYLISH_INDENT_BASE)
