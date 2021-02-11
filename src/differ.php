@@ -4,7 +4,6 @@ namespace Differ\Differ;
 
 use function Differ\Parsers\parse;
 use function Differ\Formater\format;
-
 use function Funct\Collection\union;
 
 function readFile(string $filePath)
@@ -39,24 +38,14 @@ function genAst($firstData, $secondData)
     $firstData = (array) $firstData;
     $secondData = (array) $secondData;
 
-    //print_r($firstData);//die;
-
-    //$union = union(array_keys($firstData), array_keys($secondData));
     $union = array_keys(array_merge($firstData, $secondData));
-  // print_r($union);//die;
-  //$union = array_merge($firstData, $secondData);
-  
-
     sort($union);
-
-    // print_r($union);die;
 
     $ast = array_reduce($union, function ($acc, $item) use ($firstData, $secondData) {
         $acc[] = diffData($item, $firstData, $secondData);
         return $acc;
-    }, []);    
+    }, []);
 
-   // print_r($ast);die;
     return $ast;
 }
 
