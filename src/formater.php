@@ -62,7 +62,7 @@ function stylish($ast)
     }, []);
    // return flattenAll($result);
    return implode(
-       PHP_EQL,
+    //   " \n",
        array_merge(['{'], flattenAll($result), ['}']
        )
    );
@@ -71,7 +71,7 @@ function stylish($ast)
 function prepareValue($value, $space = STYLISH_INDENT_BASE)
 {
     $array = (array) $value;
-    $result = implode("", array_map(function ($key, $value) use ($space) {
+    ////$result = implode("", array_map(function ($key, $value) use ($space) {
         return "\n" . $space . "    {$key}: " . prepareValue($value, $space . "    ");
     }, array_keys($array), $array));
     return "{" . $result . "\n" . $space . "}";

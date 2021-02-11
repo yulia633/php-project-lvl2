@@ -43,9 +43,13 @@ function genAst($firstData, $secondData)
 
     //$union = union(array_keys($firstData), array_keys($secondData));
     $union = array_keys(array_merge($firstData, $secondData));
-   // print_r($union);//die;
+  // print_r($union);//die;
+  //$union = array_merge($firstData, $secondData);
+  
 
-   // sort($union);
+    sort($union);
+
+    // print_r($union);die;
 
     $ast = array_reduce($union, function ($acc, $item) use ($firstData, $secondData) {
         $acc[] = diffData($item, $firstData, $secondData);
@@ -58,7 +62,11 @@ function genAst($firstData, $secondData)
 
 function diffData($item, $data1, $data2)
 {
+    // var_dump($item);
+    // var_dump($data1);
+    // var_dump($data2);die;
     if (!array_key_exists($item, $data1)) {
+        // print_r($item);die;
         return [
             'key' => $item,
             'type' => 'added',
