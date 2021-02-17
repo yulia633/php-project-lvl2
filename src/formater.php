@@ -85,17 +85,4 @@ function prepareValue($value, $dept)
         $formatedData = implode("\n", $result);
         return "{\n{$formatedData}\n{$indent}}";
     }
-
-    if (is_array($value)) {
-        $keys = array_keys(($value));
-        $indent = str_repeat(" ", 4 * $dept);
-
-        $result = array_map(function ($key) use ($value, $dept, $indent) {
-            $childValue = prepareValue($value[$key], $dept + 1);
-            return "{$indent}    {$key}: {$childValue}";
-        }, $keys);
-
-        $formatedData = implode("\n", $result);
-        return "{\n{$formatedData}\n{$indent}}";
-    }
 }
