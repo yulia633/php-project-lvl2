@@ -16,7 +16,7 @@ class GenDiffTest extends TestCase
     {
         $fixtures = "./tests/fixtures/";
         $this->assertEquals(
-            file_get_contents($fixtures . $expected),
+            trim(file_get_contents($fixtures . $expected)),
             genDiff($fixtures . $file1, $fixtures . $file2, $format)
         );
     }
@@ -26,6 +26,8 @@ class GenDiffTest extends TestCase
         return [
             ["diffJson.txt", "file1.json", "file2.json", "json"],
             ["diffJson.txt", "file1.yml", "file2.yml", "json"],
+            ["diff.txt", "file1.json", "file2.json", "stylish"],
+            ["diff.txt", "file1.yml", "file2.yml", "stylish"],
             ["diffStylish.txt", "fileNest1.json", "fileNest2.json", "stylish"],
             ["diffStylish.txt", "fileNest1.yml", "fileNest2.yml", "stylish"]
         ];

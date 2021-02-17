@@ -4,7 +4,6 @@ namespace Differ\Differ;
 
 use function Differ\Parsers\parse;
 use function Differ\Formater\format;
-use function Funct\Collection\union;
 
 function readFile(string $filePath)
 {

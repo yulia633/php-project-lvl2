@@ -28,25 +28,25 @@ function stylish($data, $dept)
         switch ($type) {
             case 'nested':
                 $children = stylish($node['children'], $dept + 1);
-                $acc[] = "{$indent}    {$node['key']}: {$children}";
+                $acc[] = "{$indent}    {$key}: {$children}";
                 break;
             case 'added':
                 $formattedNewValue = prepareValue($node['newValue'], $dept);
-                $acc[] = "{$indent}  + {$node['key']}: {$formattedNewValue}";
+                $acc[] = "{$indent}  + {$key}: {$formattedNewValue}";
                 break;
             case 'removed':
                 $formattedOldValue = prepareValue($node['newValue'], $dept);
-                $acc[] = "{$indent}  - {$node['key']}: {$formattedOldValue}";
+                $acc[] = "{$indent}  - {$key}: {$formattedOldValue}";
                 break;
             case 'not updated':
                 $formattedNewValue = prepareValue($node['newValue'], $dept);
-                $acc[] = "{$indent}    {$node['key']}: {$formattedNewValue}";
+                $acc[] = "{$indent}    {$key}: {$formattedNewValue}";
                 break;
             case 'updated':
                 $formattedOldValue = prepareValue($node['oldValue'], $dept);
                 $formattedNewValue = prepareValue($node['newValue'], $dept);
-                $addedNode = "{$indent}  + {$node['key']}: {$formattedNewValue}";
-                $deletedNode = "{$indent}  - {$node['key']}: {$formattedOldValue}";
+                $addedNode = "{$indent}  + {$key}: {$formattedNewValue}";
+                $deletedNode = "{$indent}  - {$key}: {$formattedOldValue}";
                 $acc[] = implode("\n", [$deletedNode, $addedNode]);
                 break;
             default:
