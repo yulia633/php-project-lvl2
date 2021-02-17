@@ -34,7 +34,6 @@ function genDiff(string $firstFilePath, string $secondFilePath, $format = 'styli
 
 function genAst($firstData, $secondData)
 {
-    //Todo: возможно тут возвращать принудительно массив вместо объекта
     $firstData = (array) $firstData;
     $secondData = (array) $secondData;
 
@@ -51,11 +50,7 @@ function genAst($firstData, $secondData)
 
 function diffData($item, $data1, $data2)
 {
-    // var_dump($item);
-    // var_dump($data1);
-    // var_dump($data2);die;
     if (!array_key_exists($item, $data1)) {
-        // print_r($item);die;
         return [
             'key' => $item,
             'type' => 'added',

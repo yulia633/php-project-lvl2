@@ -2,81 +2,100 @@
 
 namespace Differ\Formater;
 
-use function Funct\Collection\flattenAll;
-
-const STYLISH_INDENT = "    ";
-const STYLISH_INDENT_BASE = " ";
-
-function format($ast, $format)
+function format($data, $format)
 {
-    return mapping()[$format]($ast);
+    switch ($format) {
+        case 'json':
+            return json($data);
+        case 'stylish':
+            return stylish($data, 1);
+        default:
+            throw new \Exception("The report format '{$format}' is not supported");
+    }
 }
 
-function mapping()
+function json($data)
 {
-    return [
-        'stylish' => fn($ast) => stylish($ast),
-        'json' => fn($ast) => json($ast),
-    ];
+    return json_encode($data, JSON_THROW_ON_ERROR);
 }
 
-function json($ast)
+function stylish($data, $dept)
 {
-    return json_encode($ast);
-}
-
-function stylish($ast)
-{
-    $result = array_reduce($ast, function ($acc, $node) {
+    $indent = str_repeat(" ", ($dept - 1) * 4);
+    $result = array_reduce($data, function ($acc, $node) use ($dept, $indent) {
         $type = $node['type'];
         $key = $node['key'];
         switch ($type) {
             case 'nested':
-                $children = $node['children'];
-                $acc[] = STYLISH_INDENT_BASE . "    {$key}: {";
-                $acc[] = stylish($children, STYLISH_INDENT_BASE . STYLISH_INDENT);
-                $acc[] = STYLISH_INDENT_BASE . "    }";
+                $children = stylish($node['children'], $dept + 1);
+                $acc[] = "{$indent}    {$node['key']}: {$children}";
                 break;
             case 'added':
-                $newValue = $node['newValue'];
-                $acc[] = STYLISH_INDENT_BASE
-                    . "  + {$key}: "
-                    . prepareValue($newValue, STYLISH_INDENT_BASE
-                    . STYLISH_INDENT);
+                $formattedNewValue = prepareValue($node['newValue'], $dept);
+                $acc[] = "{$indent}  + {$node['key']}: {$formattedNewValue}";
                 break;
             case 'removed':
-                $oldValue = $node['oldValue'];
-                $acc[] = STYLISH_INDENT_BASE
-                    . "  - {$key}: "
-                    . prepareValue($oldValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
+                $formattedOldValue = prepareValue($node['newValue'], $dept);
+                $acc[] = "{$indent}  - {$node['key']}: {$formattedOldValue}";
                 break;
             case 'not updated':
-                $newValue = $node['newValue'];
-                $acc[] = STYLISH_INDENT_BASE
-                    . "    {$key}: " . prepareValue($newValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
+                $formattedNewValue = prepareValue($node['newValue'], $dept);
+                $acc[] = "{$indent}    {$node['key']}: {$formattedNewValue}";
                 break;
             case 'updated':
-                $newValue = $node['newValue'];
-                $oldValue = $node['oldValue'];
-                $acc[] = STYLISH_INDENT_BASE
-                    . "  - {$key}: " . prepareValue($oldValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
-                $acc[] = STYLISH_INDENT_BASE
-                    . "  + {$key}: " . prepareValue($newValue, STYLISH_INDENT_BASE . STYLISH_INDENT);
+                $formattedOldValue = prepareValue($node['oldValue'], $dept);
+                $formattedNewValue = prepareValue($node['newValue'], $dept);
+                $addedNode = "{$indent}  + {$node['key']}: {$formattedNewValue}";
+                $deletedNode = "{$indent}  - {$node['key']}: {$formattedOldValue}";
+                $acc[] = implode("\n", [$deletedNode, $addedNode]);
                 break;
             default:
-                throw new Exception("Invalid {$type}.");
+                throw new \Exception("Invalid {$type}.");
         };
         return $acc;
     }, []);
-   // return flattenAll($result);
-    return implode(" \n", array_merge(['{'], flattenAll($result), ['}']));
+
+    $formatedData = implode("\n", $result);
+    return "{\n{$formatedData}\n{$indent}}";
 }
 
-function prepareValue($value, $space = STYLISH_INDENT_BASE)
+function prepareValue($value, $dept)
 {
-    $array = (array) $value;
-    $result = implode("", array_map(function ($key, $value) use ($space) {
-        return "\n" . $space . "    {$key}: " . prepareValue($value, $space . "    ");
-    }, array_keys($array), $array));
-    return "{" . $result . "\n" . $space . "}";
+    if (is_bool($value)) {
+        return $value ? 'true' : 'false';
+    }
+
+    if (is_null($value)) {
+        return 'null';
+    }
+
+    if (!is_array($value) && !is_object($value)) {
+        return $value;
+    }
+
+    if (is_object($value)) {
+        $keys = array_keys(get_object_vars($value));
+        $indent = str_repeat(" ", 4 * $dept);
+
+        $result = array_map(function ($key) use ($value, $dept, $indent) {
+            $childValue = prepareValue($value->$key, $dept + 1);
+            return "{$indent}    {$key}: {$childValue}";
+        }, $keys);
+
+        $formatedData = implode("\n", $result);
+        return "{\n{$formatedData}\n{$indent}}";
+    }
+
+    if (is_array($value)) {
+        $keys = array_keys(($value));
+        $indent = str_repeat(" ", 4 * $dept);
+
+        $result = array_map(function ($key) use ($value, $dept, $indent) {
+            $childValue = prepareValue($value[$key], $dept + 1);
+            return "{$indent}    {$key}: {$childValue}";
+        }, $keys);
+
+        $formatedData = implode("\n", $result);
+        return "{\n{$formatedData}\n{$indent}}";
+    }
 }

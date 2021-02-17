@@ -8,31 +8,26 @@ use function Differ\Differ\genDiff;
 
 class GenDiffTest extends TestCase
 {
-    public function testDiffJsonFlat()
-    {
-        $diff = genDiff(__DIR__ . '/fixtures/file1.json', __DIR__ . '/fixtures/file2.json');
+    /**
+     * @dataProvider additionProvider
+     */
 
-        $this->assertStringEqualsFile(__DIR__ . '/fixtures/diff.txt', $diff);
+    public function testGenDiffWithDataSet($expected, $file1, $file2, $format)
+    {
+        $fixtures = "./tests/fixtures/";
+        $this->assertEquals(
+            file_get_contents($fixtures . $expected),
+            genDiff($fixtures . $file1, $fixtures . $file2, $format)
+        );
     }
 
-    public function testDiffYamlFlat()
+    public function additionProvider()
     {
-        $diff = genDiff(__DIR__ . '/fixtures/filepath1.yml', __DIR__ . '/fixtures/filepath2.yml');
-
-        $this->assertStringEqualsFile(__DIR__ . '/fixtures/diff.txt', $diff);
-    }
-
-    public function testDiffJsonNest()
-    {
-        $expected = file_get_contents('tests/fixtures/diffNest.txt');
-        $actualJson = genDiff(__DIR__ . '/fixtures/fileNest1.json', __DIR__ . '/fixtures/fileNest2.json');
-        $this->expectOutputString($expected, $actualJson);
-    }
-
-    public function testDiffYamlNest()
-    {
-        $expected = file_get_contents('tests/fixtures/diffNest.txt');
-        $actualYaml = genDiff(__DIR__ . '/fixtures/fileNest1.yml', __DIR__ . '/fixtures/fileNest2.yml');
-        $this->expectOutputString($expected, $actualYaml);
+        return [
+            ["diffJson.txt", "file1.json", "file2.json", "json"],
+            ["diffJson.txt", "file1.yml", "file2.yml", "json"],
+            ["diffStylish.txt", "fileNest1.json", "fileNest2.json", "stylish"],
+            ["diffStylish.txt", "fileNest1.yml", "fileNest2.yml", "stylish"]
+        ];
     }
 }
