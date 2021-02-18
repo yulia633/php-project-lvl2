@@ -44,5 +44,8 @@
 #### Сравнение плоских файлов json и yaml/yml
 [![asciicast](https://asciinema.org/a/383139.svg)](https://asciinema.org/a/383139)
 
-#### Сравнение древовидных файлов json и yaml/yml
+#### Сравнение древовидных файлов json и yaml/yml в формате по умолчанию stylish
 [![asciicast](https://asciinema.org/a/392050.svg)](https://asciinema.org/a/392050)
+
+#### Сравнение файлов json/yaml в формате plain 
+[![asciicast](https://asciinema.org/a/392103.svg)](https://asciinema.org/a/392103)
