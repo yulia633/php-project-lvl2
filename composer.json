@@ -8,7 +8,10 @@
             "src/cli.php",
             "src/differ.php",
             "src/parsers.php",
-            "src/formatters.php"
+            "src/formatters.php",
+            "src/formatters/json.php",
+            "src/formatters/plain.php",
+            "src/formatters/stylish.php"
         ],
         "psr-4": {
             "Differ\\Tests\\": "tests",
