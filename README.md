@@ -8,7 +8,7 @@
 
 Второй проект из четырёх, в рамках профессии PHP-программист на [Хекслет](https://ru.hexlet.io/professions/php).
 
-### Описание проекта
+#### Описание проекта
 В рамках данного проекта необходимо реализовать утилиту для поиска отличий в конфигурационных файлах.
 
 Возможности утилиты:
@@ -19,16 +19,30 @@
 ```
 
 Пример использования:
+-----
+#### CLI приложение:  
+    $ gendiff [--format <fmt>] <pathToFile1> <pathTofile2>
+    
+Посмотреть описание в командной строке:
 
-```
-$ bin/gendiff --format plain pathToFile1 pathTofile2
-```
-### Установка
+    $ gendiff -h
+    $ gendiff --help
+
+#### Бибилиотека:
+    use function Differ\Differ\genDiff;
+    
+    genDiff($pathToFile1, $pathTofile2, $format = 'stylish');
+
+#### Установка
 Для глобальной установки выполните команду:
 `$ composer global require yulia633/hexlet-project-2`
+Для установки в проект как библиотеку выполните команду:
+`$ composer require yulia633/hexlet-project-2`
 
-### Как работает
-Сравнение плоских файлов json и yaml/yml
+### Как работает пакет
+
+#### Для глобальной установки выполните команду:
 [![asciicast](https://asciinema.org/a/383139.svg)](https://asciinema.org/a/383139)
-Сравнение древовидных файлов json и yaml/yml
+
+#### Сравнение древовидных файлов json и yaml/yml
 [![asciicast](https://asciinema.org/a/392050.svg)](https://asciinema.org/a/392050)
