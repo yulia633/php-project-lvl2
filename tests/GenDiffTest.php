@@ -29,7 +29,9 @@ class GenDiffTest extends TestCase
             'input flat json - output stylish' => ["diff.txt", "file1.json", "file2.json", "stylish"],
             'input flat yml - output stylish' => ["diff.txt", "file1.yml", "file2.yml", "stylish"],
             'input nested json - output stylish' => ["diffStylish.txt", "fileNest1.json", "fileNest2.json", "stylish"],
-            'input nested yml - output stylish' => ["diffStylish.txt", "fileNest1.yml", "fileNest2.yml", "stylish"]
+            'input nested yml - output stylish' => ["diffStylish.txt", "fileNest1.yml", "fileNest2.yml", "stylish"],
+            'input nested json - output plain' => ["diffPlain.txt", "fileNest1.json", "fileNest2.json", "plain"],
+            'input nested yml - output plain' => ["diffPlain.txt", "fileNest1.yml", "fileNest2.yml", "plain"]
         ];
     }
 }
