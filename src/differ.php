@@ -68,7 +68,7 @@ function diffData($item, $data1, $data2)
     if (is_object($data1[$item]) && is_object($data2[$item])) {
         return [
             'key' => $item,
-            'type' => 'nested',
+            'type' => 'complex',
             'children' => genAst($data1[$item], $data2[$item]),
         ];
     }

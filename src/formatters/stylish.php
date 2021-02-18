@@ -9,7 +9,7 @@ function stylish($data, $dept)
         $type = $node['type'];
         $key = $node['key'];
         switch ($type) {
-            case 'nested':
+            case 'complex':
                 $children = stylish($node['children'], $dept + 1);
                 $acc[] = "{$indent}    {$key}: {$children}";
                 break;
@@ -52,8 +52,9 @@ function prepareValue($value, $dept)
         return 'null';
     }
 
-    if (!is_array($value) && !is_object($value)) {
-        return $value;
+    if (is_array($value)) {
+        $formatedData = implode(", ", $value);
+        return "[{formatedData}]";
     }
 
     if (is_object($value)) {
@@ -68,6 +69,8 @@ function prepareValue($value, $dept)
         $formatedData = implode("\n", $result);
         return "{\n{$formatedData}\n{$indent}}";
     }
+
+    return $value;
 }
 
 function format($data)

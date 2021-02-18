@@ -19,6 +19,3 @@ function format($data, $format)
             throw new \Exception("The report format '{$format}' is not supported");
     }
 }
-
-
-
