@@ -30,3 +30,5 @@ $ bin/gendiff --format plain pathToFile1 pathTofile2
 ### Как работает
 Сравнение плоских файлов json и yaml/yml
 [![asciicast](https://asciinema.org/a/383139.svg)](https://asciinema.org/a/383139)
+Сравнение древовидных файлов json и yaml/yml
+[![asciicast](https://asciinema.org/a/392050.svg)](https://asciinema.org/a/392050)
