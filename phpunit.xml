@@ -17,9 +17,8 @@
         </exclude>
 
         <report>
-            <clover outputFile="clover.xml"/>           
+            <clover outputFile="clover.xml"/>
             <text outputFile="coverage.txt" showUncoveredFiles="false" showOnlySummary="true"/>
-            <xml outputDirectory="xml-coverage"/>
         </report>
     </coverage>
 
