@@ -28,7 +28,7 @@
     $ gendiff -h
     $ gendiff --help
 
-#### Бибилиотека:
+#### Библиотека:
     use function Differ\Differ\genDiff;
     
     genDiff($pathToFile1, $pathTofile2, $format = 'stylish');
