@@ -19,6 +19,8 @@ jobs:
         run: make install
       - name: Run linter
         run: make lint
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        run: make test
       - name: Run test and show code coverage
         uses: paambaati/codeclimate-action@v2.6.0
         env:
@@ -26,4 +28,4 @@ jobs:
         with:
           coverageCommand: make test-coverage
           coverageLocations: ${{ github.workplace }}/build/logs/clover.xml:clover
-          debug: true  
+          debug: true
