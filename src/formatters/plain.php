@@ -2,7 +2,7 @@
 
 namespace Differ\Formatters\plain;
 
-function plain($data, $propertyValue)
+function plain(array $data, string $propertyValue): string
 {
     $result = array_reduce($data, function ($acc, $node) use ($propertyValue) {
         $type = $node['type'];
@@ -36,7 +36,7 @@ function plain($data, $propertyValue)
     return implode("\n", arrayFlatten($result));
 }
 
-function prepareValue($value)
+function prepareValue($value): string
 {
     if (is_bool($value)) {
         return $value ? 'true' : 'false';
@@ -57,12 +57,12 @@ function prepareValue($value)
     return $value;
 }
 
-function format($data)
+function format(array $data): string
 {
     return plain($data, "");
 }
 
-function arrayFlatten($tree, $depth = 0)
+function arrayFlatten(array $tree, int $depth = 0): array
 {
     $result = [];
     foreach ($tree as $key => $value) {

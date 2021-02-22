@@ -5,7 +5,7 @@ namespace Differ\Differ;
 use function Differ\Parsers\parse;
 use function Differ\Formatters\format;
 
-function readFile(string $filePath)
+function readFile(string $filePath): string
 {
     $path = realpath($filePath);
 
@@ -16,13 +16,13 @@ function readFile(string $filePath)
     return file_get_contents($path);
 }
 
-function getData($path)
+function getData(string $path): object
 {
     $type = pathinfo($path, PATHINFO_EXTENSION);
     return parse(readFile($path), $type);
 }
 
-function genDiff(string $firstFilePath, string $secondFilePath, $format = 'stylish')
+function genDiff(string $firstFilePath, string $secondFilePath, $format = 'stylish'): string
 {
     $firstData = getData($firstFilePath);
     $secondData = getData($secondFilePath);
@@ -31,7 +31,7 @@ function genDiff(string $firstFilePath, string $secondFilePath, $format = 'styli
     return format($ast, $format);
 }
 
-function genAst($firstData, $secondData)
+function genAst(object $firstData, object $secondData): array
 {
     $firstData = (array) $firstData;
     $secondData = (array) $secondData;
@@ -47,7 +47,7 @@ function genAst($firstData, $secondData)
     return $ast;
 }
 
-function diffData($item, $data1, $data2)
+function diffData(string $item, array $data1, array $data2): array
 {
     if (!array_key_exists($item, $data1)) {
         return [

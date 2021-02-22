@@ -2,7 +2,7 @@
 
 namespace Differ\Formatters\stylish;
 
-function stylish($data, $dept)
+function stylish($data, int $dept): string
 {
     $indent = str_repeat(" ", ($dept - 1) * 4);
     $result = array_reduce($data, function ($acc, $node) use ($dept, $indent) {
@@ -42,7 +42,7 @@ function stylish($data, $dept)
     return "{\n{$formatedData}\n{$indent}}";
 }
 
-function prepareValue($value, $dept)
+function prepareValue($value, int $dept): string
 {
     if (is_bool($value)) {
         return $value ? 'true' : 'false';
@@ -73,7 +73,7 @@ function prepareValue($value, $dept)
     return $value;
 }
 
-function format($data)
+function format(array $data): string
 {
     return stylish($data, 1);
 }

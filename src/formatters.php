@@ -6,7 +6,7 @@ use Differ\Formatters\json;
 use Differ\Formatters\stylish;
 use Differ\Formatters\plain;
 
-function format($data, $format)
+function format(array $data, string $format): string
 {
     switch ($format) {
         case 'json':
