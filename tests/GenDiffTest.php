@@ -8,27 +8,52 @@ use function Differ\Differ\genDiff;
 
 class GenDiffTest extends TestCase
 {
-    /**
-     * @dataProvider additionProvider
-     */
-
-    public function testGenDiffWithDataSet($expected, $file1, $file2, $format)
+    private function getFilePath(string $fileName): string
     {
-        $fixtures = "./tests/fixtures/";
-        $this->assertEquals(
-            trim(file_get_contents($fixtures . $expected)),
-            genDiff($fixtures . $file1, $fixtures . $file2, $format)
-        );
+        $parts = [__DIR__, 'fixtures', $fileName];
+        return implode(DIRECTORY_SEPARATOR, $parts);
     }
 
-    public function additionProvider()
+     /**
+     * @dataProvider defaultOutputProvider
+     */
+    public function testDefaultFormatOutput(string $fileName1, string $fileName2, string $expectedFileName): void
+    {
+        $expectedOutput = file_get_contents($this->getFilePath($expectedFileName));
+        $this->assertSame($expectedOutput, genDiff($this->getFilePath($fileName1), $this->getFilePath($fileName2)));
+    }
+
+    /**
+     * @dataProvider differentFormatsProvider
+     */
+    public function testDifferentFormatOutputs(
+        string $fileName1,
+        string $fileName2,
+        string $format,
+        string $expectedFileName
+    ): void {
+        $expectedOutput = trim(file_get_contents($this->getFilePath($expectedFileName)));
+        $this->assertSame($expectedOutput, genDiff(
+            $this->getFilePath($fileName1),
+            $this->getFilePath($fileName2),
+            $format
+        ));
+    }
+
+    public function defaultOutputProvider(): array
     {
         return [
-            'input nested yml - output stylish' => ["diffStylish.txt", "fileNest1.yml", "fileNest2.yml", "stylish"],
-            'input nested json - output plain' => ["diffPlain.txt", "fileNest1.json", "fileNest2.json", "plain"],
-            'input nested yml - output plain' => ["diffPlain.txt", "fileNest1.yml", "fileNest2.yml", "plain"],
-            'input nested json - output json' => ["diffJson.txt", "fileNest1.json", "fileNest2.json", "json"],
-            'input nested yml - output json' => ["diffJson.txt", "fileNest1.yml", "fileNest2.yml", "json"]
+            'default output for json files' => ['fileNest1.json', 'fileNest2.json', 'diffStylish.txt'],
+            'default output for yaml files' => ['fileNest1.yml', 'fileNest2.yml', 'diffStylish.txt']
+        ];
+    }
+
+    public function differentFormatsProvider(): array
+    {
+        return [
+            'output stylish' => ['fileNest1.yml', 'fileNest2.yml', 'stylish', 'diffStylish.txt'],
+            'output plain' => ['fileNest1.json', 'fileNest2.json', 'plain', 'diffPlain.txt'],
+            'output json' => ['fileNest1.json', 'fileNest2.json', 'json', 'diffJson.txt']
         ];
     }
 }
