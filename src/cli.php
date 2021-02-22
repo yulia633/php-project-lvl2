@@ -12,7 +12,7 @@ Generate diff
 Usage:
   gendiff (-h|--help)
   gendiff (-v|--version)
-  gendiff [--format <fmt>] <firstFileName> <secondFileName>
+  gendiff [--format <fmt>] <firstFilePath> <secondFilePath>
 
 Options:
   -h --help                    Show this screen
@@ -30,8 +30,8 @@ function run()
 {
     $args = \Docopt::handle(DOC, ['version' => '0.1']);
 
-    $firstFilePath = $args['<firstFile>'];
-    $secondFilePath = $args['<secondFile>'];
+    $firstFilePath = $args['<firstFilePath>'];
+    $secondFilePath = $args['<secondFilePath>'];
     $format = $args["--format"];
 
     print_r(genDiff($firstFilePath, $secondFilePath, $format));
