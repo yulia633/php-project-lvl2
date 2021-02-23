@@ -2,18 +2,17 @@
 
 namespace Differ\Differ;
 
+use function Funct\Collection\sortBy;
 use function Differ\Parsers\parse;
 use function Differ\Formatters\format;
 
 function readFile(string $filePath): string
 {
-    $path = realpath($filePath);
-
-    if (!file_exists($path)) {
+    if (!file_exists($filePath)) {
         throw new \Exception("The file {$filePath} does not exists.\n");
     }
 
-    return file_get_contents($path);
+    return (string) file_get_contents($filePath);
 }
 
 function getData(string $path): object
@@ -22,7 +21,7 @@ function getData(string $path): object
     return parse(readFile($path), $type);
 }
 
-function genDiff(string $firstFilePath, string $secondFilePath, $format = 'stylish'): string
+function genDiff(string $firstFilePath, string $secondFilePath, string $format = 'stylish'): string
 {
     $firstData = getData($firstFilePath);
     $secondData = getData($secondFilePath);
@@ -33,15 +32,14 @@ function genDiff(string $firstFilePath, string $secondFilePath, $format = 'styli
 
 function genAst(object $firstData, object $secondData): array
 {
-    $firstData = (array) $firstData;
-    $secondData = (array) $secondData;
+    $firstDataArray = (array) $firstData;
+    $secondDataArray = (array) $secondData;
 
-    $union = array_keys(array_merge($firstData, $secondData));
-    sort($union);
+    $unionKeys = array_keys(array_merge($firstDataArray, $secondDataArray));
+    $sortedKeys = array_values(sortBy($unionKeys, fn($key) => $key));
 
-    $ast = array_reduce($union, function ($acc, $item) use ($firstData, $secondData) {
-        $acc[] = diffData($item, $firstData, $secondData);
-        return $acc;
+    $ast = array_reduce($sortedKeys, function ($acc, $item) use ($firstDataArray, $secondDataArray) {
+        return[...$acc, diffData($item, $firstDataArray, $secondDataArray)];
     }, []);
 
     return $ast;

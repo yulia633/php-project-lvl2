@@ -2,7 +2,7 @@
 
 namespace Differ\Formatters\stylish;
 
-function stylish($data, int $dept): string
+function stylish(array $data, int $dept): string
 {
     $indent = str_repeat(" ", ($dept - 1) * 4);
     $result = array_reduce($data, function ($acc, $node) use ($dept, $indent) {
@@ -11,31 +11,25 @@ function stylish($data, int $dept): string
         switch ($type) {
             case 'complex':
                 $children = stylish($node['children'], $dept + 1);
-                $acc[] = "{$indent}    {$key}: {$children}";
-                break;
+                return [...$acc, "{$indent}    {$key}: {$children}"];
             case 'added':
                 $formattedNewValue = prepareValue($node['newValue'], $dept);
-                $acc[] = "{$indent}  + {$key}: {$formattedNewValue}";
-                break;
+                return [...$acc, "{$indent}  + {$key}: {$formattedNewValue}"];
             case 'removed':
                 $formattedOldValue = prepareValue($node['newValue'], $dept);
-                $acc[] = "{$indent}  - {$key}: {$formattedOldValue}";
-                break;
+                return [...$acc, "{$indent}  - {$key}: {$formattedOldValue}"];
             case 'not updated':
                 $formattedNewValue = prepareValue($node['newValue'], $dept);
-                $acc[] = "{$indent}    {$key}: {$formattedNewValue}";
-                break;
+                return [...$acc, "{$indent}    {$key}: {$formattedNewValue}"];
             case 'updated':
                 $formattedOldValue = prepareValue($node['oldValue'], $dept);
                 $formattedNewValue = prepareValue($node['newValue'], $dept);
                 $addedNode = "{$indent}  + {$key}: {$formattedNewValue}";
                 $deletedNode = "{$indent}  - {$key}: {$formattedOldValue}";
-                $acc[] = implode("\n", [$deletedNode, $addedNode]);
-                break;
+                return [...$acc, implode("\n", [$deletedNode, $addedNode])];
             default:
                 throw new \Exception("Invalid {$type}.");
         };
-        return $acc;
     }, []);
 
     $formatedData = implode("\n", $result);
@@ -61,7 +55,7 @@ function prepareValue($value, int $dept): string
         $keys = array_keys(get_object_vars($value));
         $indent = str_repeat(" ", 4 * $dept);
 
-        $result = array_map(function ($key) use ($value, $dept, $indent) {
+        $result = array_map(function ($key) use ($value, $dept, $indent): string {
             $childValue = prepareValue($value->$key, $dept + 1);
             return "{$indent}    {$key}: {$childValue}";
         }, $keys);
@@ -70,7 +64,7 @@ function prepareValue($value, int $dept): string
         return "{\n{$formatedData}\n{$indent}}";
     }
 
-    return $value;
+    return "{$value}";
 }
 
 function format(array $data): string

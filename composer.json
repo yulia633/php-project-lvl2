@@ -1,11 +1,10 @@
 {
     "name": "hexlet/code",
     "bin": [
-         "bin/gendiff"
+        "bin/gendiff"
     ],
     "autoload": {
         "files": [
-            "src/cli.php",
             "src/differ.php",
             "src/parsers.php",
             "src/formatters.php",
@@ -35,11 +34,21 @@
         "php": ">=7.4.3",
         "docopt/docopt": "^1.0",
         "symfony/yaml": "^5.2",
-        "funct/funct": "^1.5"
+        "funct/funct": "^1.5",
+        "phpstan/extension-installer": "^1.1.0",
+        "phpstan/phpstan": "^0.12.70"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.5",
-        "phpunit/phpunit": "^9"
+        "phpunit/phpunit": "^9",
+        "hexlet/phpstan-fp": "^1.1"
+    },
+    "extra": {
+        "phpstan": {
+            "includes": [
+                "extension.neon"
+            ]
+        }
     },
     "license": "MIT"
 }
