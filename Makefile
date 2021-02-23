@@ -12,3 +12,6 @@ test:
 
 test-coverage:
 	composer run-script phpunit tests -- --coverage-clover build/logs/clover.xml
+
+stan:
+	composer exec -v phpstan analyse -- -c ./extension.neon --ansi src
