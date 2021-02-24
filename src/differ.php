@@ -3,7 +3,6 @@
 namespace Differ\Differ;
 
 use function Funct\Collection\sortBy;
-use function Funct\Collection\union;
 use function Differ\Parsers\parse;
 use function Differ\Formatters\format;
 
