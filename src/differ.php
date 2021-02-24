@@ -3,6 +3,7 @@
 namespace Differ\Differ;
 
 use function Funct\Collection\sortBy;
+use function Funct\Collection\union;
 use function Differ\Parsers\parse;
 use function Differ\Formatters\format;
 
@@ -38,50 +39,45 @@ function makeNode(object $firstData, object $secondData): array
     $unionKeys = array_keys(array_merge($firstDataArray, $secondDataArray));
     $sortedKeys = array_values(sortBy($unionKeys, fn($key) => $key));
 
-    $node = array_reduce($sortedKeys, function ($acc, $key) use ($firstDataArray, $secondDataArray): array {
-        return[...$acc, diffData($key, $firstDataArray, $secondDataArray)];
-    }, []);
+    $node = array_map(function ($key) use ($firstDataArray, $secondDataArray): array {
+        if (!array_key_exists($key, $firstDataArray)) {
+            return [
+                'key' => $key,
+                'type' => 'added',
+                'oldValue' => null,
+                'newValue' => $secondDataArray[$key],
+            ];
+        }
+        if (!array_key_exists($key, $secondDataArray)) {
+            return [
+                'key' => $key,
+                'type' => 'removed',
+                'oldValue' => null,
+                'newValue' => $firstDataArray[$key],
+            ];
+        }
+        if (is_object($firstDataArray[$key]) && is_object($secondDataArray[$key])) {
+            return [
+                'key' => $key,
+                'type' => 'complex',
+                'children' => makeNode($firstDataArray[$key], $secondDataArray[$key]),
+            ];
+        }
+        if ($firstDataArray[$key] === $secondDataArray[$key]) {
+            return [
+                'key' => $key,
+                'type' => 'not updated',
+                'oldValue' => $firstDataArray[$key],
+                'newValue' => $secondDataArray[$key],
+            ];
+        }
+        return [
+            'key' => $key,
+            'type' => 'updated',
+            'oldValue' => $firstDataArray[$key],
+            'newValue' => $secondDataArray[$key],
+        ];
+    }, $sortedKeys);
 
     return $node;
-}
-
-function diffData(string $key, array $data1, array $data2): array
-{
-    if (!array_key_exists($key, $data1)) {
-        return [
-            'key' => $key,
-            'type' => 'added',
-            'oldValue' => null,
-            'newValue' => $data2[$key],
-        ];
-    }
-    if (!array_key_exists($key, $data2)) {
-        return [
-            'key' => $key,
-            'type' => 'removed',
-            'oldValue' => null,
-            'newValue' => $data1[$key],
-        ];
-    }
-    if (is_object($data1[$key]) && is_object($data2[$key])) {
-        return [
-            'key' => $key,
-            'type' => 'complex',
-            'children' => makeNode($data1[$key], $data2[$key]),
-        ];
-    }
-    if ($data1[$key] === $data2[$key]) {
-        return [
-            'key' => $key,
-            'type' => 'not updated',
-            'oldValue' => $data1[$key],
-            'newValue' => $data2[$key],
-        ];
-    }
-    return [
-        'key' => $key,
-        'type' => 'updated',
-        'oldValue' => $data1[$key],
-        'newValue' => $data2[$key],
-    ];
 }
