@@ -8,7 +8,7 @@ use function Differ\Differ\genDiff;
 
 class GenDiffTest extends TestCase
 {
-    private function getFilePath(string $fileName): string
+    private function getFilePathFixtures(string $fileName): string
     {
         $parts = [__DIR__, 'fixtures', $fileName];
         return implode(DIRECTORY_SEPARATOR, $parts);
@@ -19,8 +19,15 @@ class GenDiffTest extends TestCase
      */
     public function testDefaultFormatOutput(string $fileName1, string $fileName2, string $expectedFileName): void
     {
-        $expectedOutput = file_get_contents($this->getFilePath($expectedFileName));
-        $this->assertSame($expectedOutput, genDiff($this->getFilePath($fileName1), $this->getFilePath($fileName2)));
+        $outputFilePath = $this->getFilePathFixtures($expectedFileName);
+        $expectedOutput = file_get_contents($outputFilePath);
+
+        $inputFilePath1 = $this->getFilePathFixtures($fileName1);
+        $inputFilePath2 = $this->getFilePathFixtures($fileName2);
+
+        $diffResult = genDiff($inputFilePath1, $inputFilePath2);
+
+        $this->assertSame($expectedOutput, $diffResult);
     }
 
     /**
@@ -32,18 +39,20 @@ class GenDiffTest extends TestCase
         string $format,
         string $expectedFileName
     ): void {
-        $expectedOutput = trim(file_get_contents($this->getFilePath($expectedFileName)));
-        $this->assertSame($expectedOutput, genDiff(
-            $this->getFilePath($fileName1),
-            $this->getFilePath($fileName2),
-            $format
-        ));
+        $outputFilePath = $this->getFilePathFixtures($expectedFileName);
+        $expectedOutput = trim(file_get_contents($outputFilePath));
+
+        $inputFilePath1 = $this->getFilePathFixtures($fileName1);
+        $inputFilePath2 = $this->getFilePathFixtures($fileName2);
+
+        $diffResult = genDiff($inputFilePath1, $inputFilePath2, $format);
+
+        $this->assertSame($expectedOutput, $diffResult);
     }
 
     public function defaultOutputProvider(): array
     {
         return [
-            'default output for json files' => ['fileNest1.json', 'fileNest2.json', 'diffStylish.txt'],
             'default output for yaml files' => ['fileNest1.yml', 'fileNest2.yml', 'diffStylish.txt']
         ];
     }

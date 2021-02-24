@@ -9,7 +9,7 @@ use function Differ\Formatters\format;
 function readFile(string $filePath): string
 {
     if (!file_exists($filePath)) {
-        throw new \Exception("The file {$filePath} does not exists.\n");
+        throw new \Exception("The file {$filePath} does not exists.");
     }
 
     return (string) file_get_contents($filePath);
@@ -26,11 +26,11 @@ function genDiff(string $firstFilePath, string $secondFilePath, string $format =
     $firstData = getData($firstFilePath);
     $secondData = getData($secondFilePath);
 
-    $ast = genAst($firstData, $secondData);
-    return format($ast, $format);
+    $node = makeNode($firstData, $secondData);
+    return format($node, $format);
 }
 
-function genAst(object $firstData, object $secondData): array
+function makeNode(object $firstData, object $secondData): array
 {
     $firstDataArray = (array) $firstData;
     $secondDataArray = (array) $secondData;
@@ -38,51 +38,50 @@ function genAst(object $firstData, object $secondData): array
     $unionKeys = array_keys(array_merge($firstDataArray, $secondDataArray));
     $sortedKeys = array_values(sortBy($unionKeys, fn($key) => $key));
 
-    $ast = array_reduce($sortedKeys, function ($acc, $item) use ($firstDataArray, $secondDataArray): array {
-        return[...$acc, diffData($item, $firstDataArray, $secondDataArray)];
+    $node = array_reduce($sortedKeys, function ($acc, $key) use ($firstDataArray, $secondDataArray): array {
+        return[...$acc, diffData($key, $firstDataArray, $secondDataArray)];
     }, []);
 
-    return $ast;
+    return $node;
 }
 
-function diffData(string $item, array $data1, array $data2): array
+function diffData(string $key, array $data1, array $data2): array
 {
-    if (!array_key_exists($item, $data1)) {
+    if (!array_key_exists($key, $data1)) {
         return [
-            'key' => $item,
+            'key' => $key,
             'type' => 'added',
             'oldValue' => null,
-            'newValue' => $data2[$item],
+            'newValue' => $data2[$key],
         ];
     }
-    if (!array_key_exists($item, $data2)) {
+    if (!array_key_exists($key, $data2)) {
         return [
-            'key' => $item,
+            'key' => $key,
             'type' => 'removed',
             'oldValue' => null,
-            'newValue' => $data1[$item],
+            'newValue' => $data1[$key],
         ];
     }
-    if (is_object($data1[$item]) && is_object($data2[$item])) {
+    if (is_object($data1[$key]) && is_object($data2[$key])) {
         return [
-            'key' => $item,
+            'key' => $key,
             'type' => 'complex',
-            'children' => genAst($data1[$item], $data2[$item]),
+            'children' => makeNode($data1[$key], $data2[$key]),
         ];
     }
-    if ($data1[$item] === $data2[$item]) {
+    if ($data1[$key] === $data2[$key]) {
         return [
-            'key' => $item,
+            'key' => $key,
             'type' => 'not updated',
-            'oldValue' => $data1[$item],
-            'newValue' => $data2[$item],
-        ];
-    } else {
-        return [
-            'key' => $item,
-            'type' => 'updated',
-            'oldValue' => $data1[$item],
-            'newValue' => $data2[$item],
+            'oldValue' => $data1[$key],
+            'newValue' => $data2[$key],
         ];
     }
+    return [
+        'key' => $key,
+        'type' => 'updated',
+        'oldValue' => $data1[$key],
+        'newValue' => $data2[$key],
+    ];
 }

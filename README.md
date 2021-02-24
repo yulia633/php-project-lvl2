@@ -41,10 +41,10 @@
 
 ### Как работает пакет
 
-#### Сравнение плоских файлов json и yaml/yml
-[![asciicast](https://asciinema.org/a/383139.svg)](https://asciinema.org/a/383139)
+#### Сравнение файлов json и yaml/yml в формате по умолчанию stylish
+[![asciicast](https://asciinema.org/a/394025.svg)](https://asciinema.org/a/394025)
 
-#### Сравнение древовидных файлов json и yaml/yml в формате по умолчанию stylish
+#### Сравнение файлов json и yaml/yml в формате stylish
 [![asciicast](https://asciinema.org/a/392111.svg)](https://asciinema.org/a/392111)
 
 #### Сравнение файлов json/yaml в формате plain 
