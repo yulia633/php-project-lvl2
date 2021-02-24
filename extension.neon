@@ -1,0 +1,9 @@
+includes:
+  - vendor/hexlet/phpstan-fp/phpstan.neon
+
+parameters:
+
+  phpstanFunctionalProgramming:
+    disallowClasses: false
+    disallowThrow: false
+    disallowUnusedExpression: false
