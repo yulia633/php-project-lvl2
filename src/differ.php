@@ -38,7 +38,7 @@ function genAst(object $firstData, object $secondData): array
     $unionKeys = array_keys(array_merge($firstDataArray, $secondDataArray));
     $sortedKeys = array_values(sortBy($unionKeys, fn($key) => $key));
 
-    $ast = array_reduce($sortedKeys, function ($acc, $item) use ($firstDataArray, $secondDataArray) {
+    $ast = array_reduce($sortedKeys, function ($acc, $item) use ($firstDataArray, $secondDataArray): array {
         return[...$acc, diffData($item, $firstDataArray, $secondDataArray)];
     }, []);
 

@@ -4,7 +4,7 @@ namespace Differ\Formatters\plain;
 
 function plain(array $data, string $propertyValue): string
 {
-    $result = array_reduce($data, function ($acc, $node) use ($propertyValue) {
+    $result = array_reduce($data, function ($acc, $node) use ($propertyValue): array {
         $type = $node['type'];
         $key = $node['key'];
         $property = "{$propertyValue}{$key}";
@@ -57,7 +57,7 @@ function format(array $data): string
 
 function arrayFlatten(array $items): array
 {
-    return array_reduce($items, function ($acc, $item) {
+    return array_reduce($items, function ($acc, $item): array {
         if (is_array($item)) {
             return [...$acc, ...arrayFlatten($item)];
         };

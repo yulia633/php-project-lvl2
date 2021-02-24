@@ -5,7 +5,7 @@ namespace Differ\Formatters\stylish;
 function stylish(array $data, int $dept): string
 {
     $indent = str_repeat(" ", ($dept - 1) * 4);
-    $result = array_reduce($data, function ($acc, $node) use ($dept, $indent) {
+    $result = array_reduce($data, function ($acc, $node) use ($dept, $indent): array {
         $type = $node['type'];
         $key = $node['key'];
         switch ($type) {
