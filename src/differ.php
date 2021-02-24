@@ -16,18 +16,20 @@ function readFile(string $filePath): string
     return (string) file_get_contents($filePath);
 }
 
-function getData(string $path): object
+function getType(string $path): string
 {
-    $type = pathinfo($path, PATHINFO_EXTENSION);
-    return parse(readFile($path), $type);
+    return pathinfo($path, PATHINFO_EXTENSION);
 }
 
 function genDiff(string $firstFilePath, string $secondFilePath, string $format = 'stylish'): string
 {
-    $firstData = getData($firstFilePath);
-    $secondData = getData($secondFilePath);
+    $firstData = readFile($firstFilePath);
+    $secondData = readFile($secondFilePath);
 
-    $node = makeNode($firstData, $secondData);
+    $parseFirstData = parse($firstData, getType($firstFilePath));
+    $parseSecondData = parse($secondData, getType($secondFilePath));
+
+    $node = makeNode($parseFirstData, $parseSecondData);
     return format($node, $format);
 }
 
