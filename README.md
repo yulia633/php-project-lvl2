@@ -52,3 +52,6 @@
 
 #### Сравнение файлов json/yaml в формате json
 [![asciicast](https://asciinema.org/a/392109.svg)](https://asciinema.org/a/392109)
+
+#### Пример работы с запуском из локального окружения
+[![asciicast](https://asciinema.org/a/394132.svg)](https://asciinema.org/a/394132)
