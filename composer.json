@@ -43,12 +43,5 @@
         "phpunit/phpunit": "^9",
         "hexlet/phpstan-fp": "^1.1"
     },
-    "extra": {
-        "phpstan": {
-            "includes": [
-                "extension.neon"
-            ]
-        }
-    },
     "license": "MIT"
 }
