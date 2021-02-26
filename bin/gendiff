@@ -30,7 +30,7 @@ Options:
 
 Report formats:
     --format <fmt>
-        stylish                 Show changes in files marked with symbols "+/-"
+        stylish                Show changes in files marked with symbols "+/-"
         plain                  Show changes in files explained by the text
         json                   Show changes in files as a JSON string
 DOC;
