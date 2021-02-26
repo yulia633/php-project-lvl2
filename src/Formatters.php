@@ -10,11 +10,11 @@ function format(array $data, string $format): string
 {
     switch ($format) {
         case 'json':
-            return json\format($data);
+            return Json\format($data);
         case 'stylish':
-            return stylish\format($data);
+            return Stylish\format($data);
         case 'plain':
-            return plain\format($data);
+            return Plain\format($data);
         default:
             throw new \Exception("The report format '{$format}' is not supported");
     }
