@@ -1,6 +1,6 @@
 <?php
 
-namespace Differ\Formatters\plain;
+namespace Differ\Formatters\Plain;
 
 function plain(array $data, string $propertyValue): string
 {

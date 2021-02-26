@@ -1,6 +1,6 @@
 <?php
 
-namespace Differ\Formatters\stylish;
+namespace Differ\Formatters\Stylish;
 
 function stylish(array $data, int $dept): string
 {
