@@ -13,6 +13,6 @@ function parse(string $data, string $type): object
         case 'yml':
             return Yaml::parse($data, Yaml::PARSE_OBJECT_FOR_MAP);
         default:
-            throw new \Exception("The file format '{$type}' is not supported");
+            throw new \Exception("The type: '{$type}' is not supported");
     }
 }
