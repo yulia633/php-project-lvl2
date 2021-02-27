@@ -2,14 +2,14 @@
 
 namespace Differ\Formatters\Plain;
 
-function generatePlane(array $data, string $origin): string
+function generatePlain(array $data, string $origin): string
 {
     $diffPlane = array_reduce($data, function ($acc, $node) use ($origin): array {
         [$type, $key] = [$node['type'], $node['key']];
         $property = "{$origin}{$key}";
         switch ($type) {
             case 'complex':
-                return [...$acc, generatePlane($node['children'], "{$property}.")];
+                return [...$acc, generatePlain($node['children'], "{$property}.")];
             case 'added':
                 $formattedNewValue = prepareValue($node['newValue']);
                 return [...$acc, "Property '{$property}' was added with value: {$formattedNewValue}"];
@@ -51,7 +51,7 @@ function prepareValue($value): string
 
 function format(array $data): string
 {
-    return generatePlane($data, "");
+    return generatePlain($data, "");
 }
 
 function arrayFlatten(array $items): array
