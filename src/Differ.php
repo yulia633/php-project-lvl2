@@ -3,6 +3,7 @@
 namespace Differ\Differ;
 
 use function Funct\Collection\sortBy;
+use function Funct\Collection\union;
 use function Differ\Parsers\parse;
 use function Differ\Formatters\format;
 
@@ -25,22 +26,20 @@ function genDiff(string $firstFilePath, string $secondFilePath, string $format =
     $firstData = readFile($firstFilePath);
     $secondData = readFile($secondFilePath);
 
-    $parseFirstData = parse($firstData, getType($firstFilePath));
-    $parseSecondData = parse($secondData, getType($secondFilePath));
+    $parsedFirstData = parse($firstData, getType($firstFilePath));
+    $parsedSecondData = parse($secondData, getType($secondFilePath));
 
-    $node = makeNode($parseFirstData, $parseSecondData);
-    return format($node, $format);
+    $ast = makeNode($parsedFirstData, $parsedSecondData);
+
+    return format($ast, $format);
 }
 
-function makeNode(object $firstData, object $secondData): array
+function makeNode(array $firstDataArray, array $secondDataArray): array
 {
-    $firstDataArray = (array) $firstData;
-    $secondDataArray = (array) $secondData;
-
-    $unionKeys = array_keys(array_merge($firstDataArray, $secondDataArray));
+    $unionKeys = union(array_keys($firstDataArray), array_keys($secondDataArray));
     $sortedKeys = array_values(sortBy($unionKeys, fn($key) => $key));
 
-    $node = array_map(function ($key) use ($firstDataArray, $secondDataArray): array {
+    $buildAst = array_map(function ($key) use ($firstDataArray, $secondDataArray): array {
         if (!array_key_exists($key, $firstDataArray)) {
             return [
                 'key' => $key,
@@ -57,7 +56,7 @@ function makeNode(object $firstData, object $secondData): array
                 'newValue' => $firstDataArray[$key],
             ];
         }
-        if (is_object($firstDataArray[$key]) && is_object($secondDataArray[$key])) {
+        if (is_array($firstDataArray[$key]) && is_array($secondDataArray[$key])) {
             return [
                 'key' => $key,
                 'type' => 'complex',
@@ -67,7 +66,7 @@ function makeNode(object $firstData, object $secondData): array
         if ($firstDataArray[$key] === $secondDataArray[$key]) {
             return [
                 'key' => $key,
-                'type' => 'not updated',
+                'type' => 'unchanged',
                 'oldValue' => $firstDataArray[$key],
                 'newValue' => $secondDataArray[$key],
             ];
@@ -80,5 +79,5 @@ function makeNode(object $firstData, object $secondData): array
         ];
     }, $sortedKeys);
 
-    return $node;
+    return $buildAst;
 }

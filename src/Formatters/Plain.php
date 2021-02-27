@@ -2,31 +2,30 @@
 
 namespace Differ\Formatters\Plain;
 
-function plain(array $data, string $propertyValue): string
+function generatePlane(array $data, string $origin): string
 {
-    $result = array_reduce($data, function ($acc, $node) use ($propertyValue): array {
-        $type = $node['type'];
-        $key = $node['key'];
-        $property = "{$propertyValue}{$key}";
+    $diffPlane = array_reduce($data, function ($acc, $node) use ($origin): array {
+        [$type, $key] = [$node['type'], $node['key']];
+        $property = "{$origin}{$key}";
         switch ($type) {
             case 'complex':
-                return [...$acc, plain($node['children'], "{$property}.")];
+                return [...$acc, generatePlane($node['children'], "{$property}.")];
             case 'added':
                 $formattedNewValue = prepareValue($node['newValue']);
                 return [...$acc, "Property '{$property}' was added with value: {$formattedNewValue}"];
             case 'removed':
                 return [...$acc, "Property '{$property}' was removed"];
-            case 'not updated':
+            case 'unchanged':
                 return [...$acc, []];
             case 'updated':
                 $formattedOldValue = prepareValue($node['oldValue']);
                 $formattedNewValue = prepareValue($node['newValue']);
                 return [...$acc, "Property '{$property}' was updated. From {$formattedOldValue} to {$formattedNewValue}"];
             default:
-                throw new \Exception("Invalid {$type}.");
+                throw new \Exception("This type: {$type} is not supported.");
         };
     }, []);
-    return implode("\n", arrayFlatten($result));
+    return implode("\n", arrayFlatten($diffPlane));
 }
 
 function prepareValue($value): string
@@ -52,7 +51,7 @@ function prepareValue($value): string
 
 function format(array $data): string
 {
-    return plain($data, "");
+    return generatePlane($data, "");
 }
 
 function arrayFlatten(array $items): array
