@@ -2,37 +2,44 @@
 
 namespace Differ\Formatters\Stylish;
 
-function generateStylish(array $data, int $depth): string
-{
-    $indent = makeIndent($depth - 1);
-    $diffStylish = array_reduce($data, function ($acc, $node) use ($depth, $indent): array {
-        [$type, $key] = [$node['type'], $node['key']];
-        switch ($type) {
-            case 'complex':
-                $children = generateStylish($node['children'], $depth + 1);
-                return [...$acc, "{$indent}    {$key}: {$children}"];
-            case 'added':
-                $formattedNewValue = prepareValue($node['newValue'], $depth);
-                return [...$acc, "{$indent}  + {$key}: {$formattedNewValue}"];
-            case 'removed':
-                $formattedOldValue = prepareValue($node['newValue'], $depth);
-                return [...$acc, "{$indent}  - {$key}: {$formattedOldValue}"];
-            case 'unchanged':
-                $formattedNewValue = prepareValue($node['newValue'], $depth);
-                return [...$acc, "{$indent}    {$key}: {$formattedNewValue}"];
-            case 'updated':
-                $formattedOldValue = prepareValue($node['oldValue'], $depth);
-                $formattedNewValue = prepareValue($node['newValue'], $depth);
-                $addedString = "{$indent}  + {$key}: {$formattedNewValue}";
-                $deletedString = "{$indent}  - {$key}: {$formattedOldValue}";
-                return [...$acc, implode("\n", [$deletedString, $addedString])];
-            default:
-                throw new \Exception("This type: {$type} is not supported.");
-        };
-    }, []);
+use function Funct\Collection\flattenAll;
 
-    $formattedString = implode("\n", $diffStylish);
-    return "{\n{$formattedString}\n{$indent}}";
+function generateStylish(array $data): string
+{
+    $diffStylish = function (array $data, int $depth) use (&$diffStylish) {
+        return array_map(function ($node) use ($depth, $diffStylish) {
+            $indent = makeIndent($depth - 1);
+            [$type, $key] = [$node['type'], $node['key']];
+            switch ($type) {
+                case 'complex':
+                    return [
+                        makeIndent($depth) . "{$key}: {",
+                        $diffStylish($node['children'], $depth + 1),
+                        makeIndent($depth) . "}"
+                    ];
+                case 'added':
+                    $formattedNewValue = prepareValue($node['newValue'], $depth);
+                    return "{$indent}  + {$key}: {$formattedNewValue}";
+                case 'removed':
+                    $formattedOldValue = prepareValue($node['newValue'], $depth);
+                    return "{$indent}  - {$key}: {$formattedOldValue}";
+                case 'unchanged':
+                    $formattedNewValue = prepareValue($node['newValue'], $depth);
+                    return "{$indent}    {$key}: {$formattedNewValue}";
+                case 'updated':
+                    $formattedOldValue = prepareValue($node['oldValue'], $depth);
+                    $formattedNewValue = prepareValue($node['newValue'], $depth);
+                    $addedString = "{$indent}  + {$key}: {$formattedNewValue}";
+                    $deletedString = "{$indent}  - {$key}: {$formattedOldValue}";
+                    return implode("\n", [$deletedString, $addedString]);
+                default:
+                    throw new \Exception("This type: {$type} is not supported.");
+            };
+        }, $data);
+    };
+    $formattedData = array_merge(['{'], flattenAll($diffStylish($data, 1)), ['}']);
+    $formattedString = implode("\n", $formattedData);
+    return "{$formattedString}";
 }
 
 function prepareValue($value, int $depth): string
@@ -67,5 +74,5 @@ function makeIndent(int $depth): string
 
 function format(array $data): string
 {
-    return generateStylish($data, 1);
+    return generateStylish($data);
 }
