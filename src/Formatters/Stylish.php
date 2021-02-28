@@ -6,7 +6,7 @@ use function Funct\Collection\flattenAll;
 
 function generateStylish(array $data): string
 {
-    $diffStylish = function (array $data, int $depth) use (&$diffStylish) {
+    $diffStylish = function (array $data, int $depth) use (&$diffStylish): array {
         return array_map(function ($node) use ($depth, $diffStylish) {
             $indent = makeIndent($depth - 1);
             [$type, $key] = [$node['type'], $node['key']];
