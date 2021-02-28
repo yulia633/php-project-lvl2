@@ -4,7 +4,7 @@ namespace Differ\Formatters\Stylish;
 
 function generateStylish(array $data, int $depth): string
 {
-    $indent = str_repeat(" ", ($depth - 1) * 4);
+    $indent = makeIndent($depth - 1);
     $diffStylish = array_reduce($data, function ($acc, $node) use ($depth, $indent): array {
         [$type, $key] = [$node['type'], $node['key']];
         switch ($type) {
@@ -47,7 +47,7 @@ function prepareValue($value, int $depth): string
 
     if (is_array($value)) {
         $keys = array_keys($value);
-        $indent = str_repeat(" ", 4 * $depth);
+        $indent = makeIndent($depth);
 
         $result = array_map(function ($key) use ($value, $depth, $indent): string {
             $childValue = prepareValue($value[$key], $depth + 1);
@@ -58,6 +58,11 @@ function prepareValue($value, int $depth): string
         return "{\n{$formattedData}\n{$indent}}";
     }
     return $value;
+}
+
+function makeIndent(int $depth): string
+{
+    return str_repeat(" ", 4 * $depth);
 }
 
 function format(array $data): string
