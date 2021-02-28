@@ -2,6 +2,8 @@
 
 namespace Differ\Formatters\Plain;
 
+use function Funct\Collection\flattenAll;
+
 function generatePlain(array $data, string $origin): string
 {
     $diffPlane = array_reduce($data, function ($acc, $node) use ($origin): array {
@@ -25,7 +27,7 @@ function generatePlain(array $data, string $origin): string
                 throw new \Exception("This type: {$type} is not supported.");
         };
     }, []);
-    return implode("\n", arrayFlatten($diffPlane));
+    return implode("\n", flattenAll($diffPlane));
 }
 
 function prepareValue($value): string
@@ -52,14 +54,4 @@ function prepareValue($value): string
 function format(array $data): string
 {
     return generatePlain($data, "");
-}
-
-function arrayFlatten(array $items): array
-{
-    return array_reduce($items, function ($acc, $item): array {
-        if (is_array($item)) {
-            return [...$acc, ...arrayFlatten($item)];
-        };
-        return [...$acc, $item];
-    }, []);
 }
