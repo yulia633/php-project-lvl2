@@ -36,8 +36,20 @@
 #### Установка
 Для глобальной установки выполните команду:
 `$ composer global require yulia633/hexlet-project-2`
+
 Для установки в проект как библиотеку выполните команду:
 `$ composer require yulia633/hexlet-project-2`
+
+#### Для разработки
+* PHP >=7.4
+* Composer
+
+#### Команды
+```shell
+$ make install
+$ make lint
+$ make test
+```
 
 ### Как работает пакет
 
