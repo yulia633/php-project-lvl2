@@ -6,15 +6,15 @@ use function Funct\Collection\flattenAll;
 
 function generateStylish(array $data): string
 {
-    $diffStylish = function (array $data, int $depth) use (&$diffStylish): array {
-        return array_map(function ($node) use ($depth, $diffStylish) {
+    $iter = function (array $data, int $depth) use (&$iter): array {
+        return array_map(function ($node) use ($depth, $iter) {
             $indent = makeIndent($depth - 1);
             [$type, $key] = [$node['type'], $node['key']];
             switch ($type) {
                 case 'complex':
                     return [
                         makeIndent($depth) . "{$key}: {",
-                        $diffStylish($node['children'], $depth + 1),
+                        $iter($node['children'], $depth + 1),
                         makeIndent($depth) . "}"
                     ];
                 case 'added':
@@ -37,7 +37,7 @@ function generateStylish(array $data): string
             };
         }, $data);
     };
-    $formattedData = array_merge(['{'], flattenAll($diffStylish($data, 1)), ['}']);
+    $formattedData = array_merge(['{'], flattenAll($iter($data, 1)), ['}']);
     $formattedString = implode("\n", $formattedData);
     return "{$formattedString}";
 }

@@ -6,13 +6,13 @@ use function Funct\Collection\flattenAll;
 
 function generatePlain(array $data): string
 {
-    $diffPlain = function ($data, $origin) use (&$diffPlain): array {
-        return array_map(function ($node) use ($origin, $diffPlain) {
+    $iter = function ($data, $origin) use (&$iter): array {
+        return array_map(function ($node) use ($origin, $iter) {
             $type = $node['type'];
             $pathToProperty = "{$origin}{$node['key']}";
             switch ($type) {
                 case 'complex':
-                    return $diffPlain($node['children'], "{$pathToProperty}.");
+                    return $iter($node['children'], "{$pathToProperty}.");
                 case 'added':
                     $formattedNewValue = prepareValue($node['newValue']);
                     return "Property '{$pathToProperty}' was added with value: {$formattedNewValue}";
@@ -29,7 +29,7 @@ function generatePlain(array $data): string
             }
         }, $data);
     };
-    return implode("\n", flattenAll($diffPlain($data, "")));
+    return implode("\n", flattenAll($iter($data, "")));
 }
 
 function prepareValue($value): string
