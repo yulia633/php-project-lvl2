@@ -16,18 +16,13 @@ function readFile(string $filePath): string
     return (string) file_get_contents($filePath);
 }
 
-function getType(string $path): string
-{
-    return pathinfo($path, PATHINFO_EXTENSION);
-}
-
 function genDiff(string $firstFilePath, string $secondFilePath, string $format = 'stylish'): string
 {
     $firstData = readFile($firstFilePath);
     $secondData = readFile($secondFilePath);
 
-    $parsedFirstData = parse($firstData, getType($firstFilePath));
-    $parsedSecondData = parse($secondData, getType($secondFilePath));
+    $parsedFirstData = parse($firstData, pathinfo($firstFilePath, PATHINFO_EXTENSION));
+    $parsedSecondData = parse($secondData, pathinfo($secondFilePath, PATHINFO_EXTENSION));
 
     $ast = makeNode($parsedFirstData, $parsedSecondData);
 
