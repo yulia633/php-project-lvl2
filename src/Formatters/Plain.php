@@ -49,4 +49,6 @@ function prepareValue($value): string
     if (is_string($value)) {
         return "'{$value}'";
     }
+
+    return "{$value}";
 }
