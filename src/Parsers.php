@@ -4,14 +4,14 @@ namespace Differ\Parsers;
 
 use Symfony\Component\Yaml\Yaml;
 
-function parse(string $data, string $type): array
+function parse(string $data, string $type): object
 {
     switch ($type) {
         case 'json':
-            return json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+            return json_decode($data, false, 512, JSON_THROW_ON_ERROR);
         case 'yaml':
         case 'yml':
-            return Yaml::parse($data);
+            return Yaml::parse($data, Yaml::PARSE_OBJECT_FOR_MAP);
         default:
             throw new \Exception("The type: '{$type}' is not supported");
     }

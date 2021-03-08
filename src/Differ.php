@@ -29,48 +29,48 @@ function genDiff(string $firstFilePath, string $secondFilePath, string $format =
     return format($ast, $format);
 }
 
-function makeNode(array $firstData, array $secondData): array
+function makeNode(object $firstData, object $secondData): array
 {
-    $unionKeys = union(array_keys($firstData), array_keys($secondData));
+    $unionKeys = union(array_keys(get_object_vars($firstData)), array_keys(get_object_vars($secondData)));
     $sortedKeys = array_values(sortBy($unionKeys, fn($key) => $key));
 
     $buildAst = array_map(function ($key) use ($firstData, $secondData): array {
-        if (!array_key_exists($key, $firstData)) {
+        if (!property_exists($firstData, $key)) {
             return [
                 'key' => $key,
                 'type' => 'added',
                 'oldValue' => null,
-                'newValue' => $secondData[$key],
+                'newValue' => $secondData->$key,
             ];
         }
-        if (!array_key_exists($key, $secondData)) {
+        if (!property_exists($secondData, $key)) {
             return [
                 'key' => $key,
                 'type' => 'removed',
                 'oldValue' => null,
-                'newValue' => $firstData[$key],
+                'newValue' => $firstData->$key,
             ];
         }
-        if (is_array($firstData[$key]) && is_array($secondData[$key])) {
+        if (is_object($firstData->$key) && is_object($secondData->$key)) {
             return [
                 'key' => $key,
                 'type' => 'complex',
-                'children' => makeNode($firstData[$key], $secondData[$key]),
+                'children' => makeNode($firstData->$key, $secondData->$key),
             ];
         }
-        if ($firstData[$key] === $secondData[$key]) {
+        if ($firstData->$key === $secondData->$key) {
             return [
                 'key' => $key,
                 'type' => 'unchanged',
-                'oldValue' => $firstData[$key],
-                'newValue' => $secondData[$key],
+                'oldValue' => $firstData->$key,
+                'newValue' => $secondData->$key,
             ];
         }
         return [
             'key' => $key,
             'type' => 'updated',
-            'oldValue' => $firstData[$key],
-            'newValue' => $secondData[$key],
+            'oldValue' => $firstData->$key,
+            'newValue' => $secondData->$key,
         ];
     }, $sortedKeys);
 

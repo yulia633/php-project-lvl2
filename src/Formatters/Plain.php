@@ -4,15 +4,15 @@ namespace Differ\Formatters\Plain;
 
 use function Funct\Collection\flattenAll;
 
-function generatePlain(array $data): string
+function format(array $diff): string
 {
-    $iter = function ($data, $origin) use (&$iter): array {
+    $iter = function ($diff, $origin) use (&$iter): array {
         return array_map(function ($node) use ($origin, $iter) {
-            $type = $node['type'];
-            $pathToProperty = "{$origin}{$node['key']}";
+            [$type, $key] = [$node['type'], $node['key']];
+            $pathToProperty = implode('.', array_filter([$origin, $key]));
             switch ($type) {
                 case 'complex':
-                    return $iter($node['children'], "{$pathToProperty}.");
+                    return $iter($node['children'], $pathToProperty);
                 case 'added':
                     $formattedNewValue = prepareValue($node['newValue']);
                     return "Property '{$pathToProperty}' was added with value: {$formattedNewValue}";
@@ -27,9 +27,9 @@ function generatePlain(array $data): string
                 default:
                     throw new \Exception("This type: {$type} is not supported.");
             }
-        }, $data);
+        }, $diff);
     };
-    return implode("\n", flattenAll($iter($data, "")));
+    return implode("\n", flattenAll($iter($diff, [])));
 }
 
 function prepareValue($value): string
@@ -49,11 +49,4 @@ function prepareValue($value): string
     if (is_string($value)) {
         return "'{$value}'";
     }
-
-    return "{$value}";
-}
-
-function format(array $data): string
-{
-    return generatePlain($data);
 }
