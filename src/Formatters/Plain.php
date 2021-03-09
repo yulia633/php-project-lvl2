@@ -6,10 +6,10 @@ use function Funct\Collection\flattenAll;
 
 function format(array $diff): string
 {
-    $iter = function ($diff, $origin) use (&$iter): array {
-        return array_map(function ($node) use ($origin, $iter) {
+    $iter = function ($diff, $ancestors) use (&$iter): array {
+        return array_map(function ($node) use ($ancestors, $iter) {
             [$type, $key] = [$node['type'], $node['key']];
-            $pathToProperty = implode('.', array_filter([$origin, $key]));
+            $pathToProperty = implode('.', array_filter([$ancestors, $key]));
             switch ($type) {
                 case 'complex':
                     return $iter($node['children'], $pathToProperty);

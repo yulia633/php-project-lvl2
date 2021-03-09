@@ -8,11 +8,11 @@ function format(array $diff): string
 {
     $iter = function (array $diff, int $depth) use (&$iter): array {
         return array_map(function ($node) use ($depth, $iter) {
-            $indent = makeIndent($depth - 1);
+            $indentChanged = makeIndent($depth - 1);
+            $indent = makeIndent($depth);
             [$type, $key] = [$node['type'], $node['key']];
             switch ($type) {
                 case 'complex':
-                    $indent = makeIndent($depth);
                     return [
                         "{$indent}{$key}: {",
                         $iter($node['children'], $depth + 1),
@@ -20,26 +20,25 @@ function format(array $diff): string
                     ];
                 case 'added':
                     $formattedNewValue = prepareValue($node['newValue'], $depth);
-                    return "{$indent}  + {$key}: {$formattedNewValue}";
+                    return "{$indentChanged}  + {$key}: {$formattedNewValue}";
                 case 'removed':
                     $formattedOldValue = prepareValue($node['newValue'], $depth);
-                    return "{$indent}  - {$key}: {$formattedOldValue}";
+                    return "{$indentChanged}  - {$key}: {$formattedOldValue}";
                 case 'unchanged':
                     $formattedNewValue = prepareValue($node['newValue'], $depth);
-                    return "{$indent}    {$key}: {$formattedNewValue}";
+                    return "{$indent}{$key}: {$formattedNewValue}";
                 case 'updated':
                     $formattedOldValue = prepareValue($node['oldValue'], $depth);
                     $formattedNewValue = prepareValue($node['newValue'], $depth);
-                    $addedString = "{$indent}  + {$key}: {$formattedNewValue}";
-                    $deletedString = "{$indent}  - {$key}: {$formattedOldValue}";
+                    $addedString = "{$indentChanged}  + {$key}: {$formattedNewValue}";
+                    $deletedString = "{$indentChanged}  - {$key}: {$formattedOldValue}";
                     return implode("\n", [$deletedString, $addedString]);
                 default:
                     throw new \Exception("This type: {$type} is not supported.");
             };
         }, $diff);
     };
-    $formattedString = implode("\n", flattenAll(['{', $iter($diff, 1), '}']));
-    return "{$formattedString}";
+    return implode("\n", flattenAll(['{', $iter($diff, 1), '}']));
 }
 
 function prepareValue($value, int $depth): string
@@ -59,15 +58,16 @@ function prepareValue($value, int $depth): string
 
     if (is_object($value)) {
         $keys = array_keys(get_object_vars($value));
-        $indent = makeIndent($depth);
+        $indent = makeIndent($depth + 1);
+        $bracketIndent = makeIndent($depth);
 
         $result = array_map(function ($key) use ($value, $depth, $indent): string {
             $childValue = prepareValue($value->$key, $depth + 1);
-                return "{$indent}    {$key}: {$childValue}";
+                return "{$indent}{$key}: {$childValue}";
         }, $keys);
 
         $formattedData = implode("\n", $result);
-        return "{\n{$formattedData}\n{$indent}}";
+        return "{\n{$formattedData}\n{$bracketIndent}}";
     }
 
     return $value;
