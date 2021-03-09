@@ -13,11 +13,7 @@ function format(array $diff): string
             [$type, $key] = [$node['type'], $node['key']];
             switch ($type) {
                 case 'complex':
-                    return [
-                        "{$indent}{$key}: {",
-                        $iter($node['children'], $depth + 1),
-                        "{$indent}}"
-                    ];
+                    return ["{$indent}{$key}: {", $iter($node['children'], $depth + 1), "{$indent}}"];
                 case 'added':
                     $formattedNewValue = prepareValue($node['newValue'], $depth);
                     return "{$indentChanged}  + {$key}: {$formattedNewValue}";
