@@ -8,24 +8,32 @@ function format(array $diff): string
 {
     $iter = function (array $diff, int $depth) use (&$iter): array {
         return array_map(function ($node) use ($depth, $iter) {
+            [
+                'key' => $key,
+                'type' => $type,
+                'oldValue' => $oldValue,
+                'newValue' => $newValue,
+                'children' => $children
+            ] = $node;
+
             $indentChanged = makeIndent($depth - 1);
             $indent = makeIndent($depth);
-            [$type, $key] = [$node['type'], $node['key']];
+
             switch ($type) {
                 case 'complex':
-                    return ["{$indent}{$key}: {", $iter($node['children'], $depth + 1), "{$indent}}"];
+                    return ["{$indent}{$key}: {", $iter($children, $depth + 1), "{$indent}}"];
                 case 'added':
-                    $formattedNewValue = prepareValue($node['newValue'], $depth);
+                    $formattedNewValue = prepareValue($newValue, $depth);
                     return "{$indentChanged}  + {$key}: {$formattedNewValue}";
                 case 'removed':
-                    $formattedOldValue = prepareValue($node['newValue'], $depth);
+                    $formattedOldValue = prepareValue($oldValue, $depth);
                     return "{$indentChanged}  - {$key}: {$formattedOldValue}";
                 case 'unchanged':
-                    $formattedNewValue = prepareValue($node['newValue'], $depth);
+                    $formattedNewValue = prepareValue($newValue, $depth);
                     return "{$indent}{$key}: {$formattedNewValue}";
                 case 'updated':
-                    $formattedOldValue = prepareValue($node['oldValue'], $depth);
-                    $formattedNewValue = prepareValue($node['newValue'], $depth);
+                    $formattedOldValue = prepareValue($oldValue, $depth);
+                    $formattedNewValue = prepareValue($newValue, $depth);
                     $addedString = "{$indentChanged}  + {$key}: {$formattedNewValue}";
                     $deletedString = "{$indentChanged}  - {$key}: {$formattedOldValue}";
                     return implode("\n", [$deletedString, $addedString]);
