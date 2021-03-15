@@ -23,20 +23,20 @@ function format(array $diff): string
                     $indentAfter = makeIndent($depth);
                     return ["{$indent}    {$key}: {", $iter($children, $depth + 1), "{$indentAfter}}"];
                 case 'added':
-                    $formattedNewValue = prepareValue($newValue, $depth);
-                    return "{$indent}  + {$key}: {$formattedNewValue}";
+                    $preparedNewValue = prepareValue($newValue, $depth);
+                    return "{$indent}  + {$key}: {$preparedNewValue}";
                 case 'removed':
-                    $formattedOldValue = prepareValue($oldValue, $depth);
-                    return "{$indent}  - {$key}: {$formattedOldValue}";
+                    $preparedOldValue = prepareValue($oldValue, $depth);
+                    return "{$indent}  - {$key}: {$preparedOldValue}";
                 case 'unchanged':
-                    $formattedNewValue = prepareValue($newValue, $depth);
-                    return "{$indent}    {$key}: {$formattedNewValue}";
+                    $preparedNewValue = prepareValue($newValue, $depth);
+                    return "{$indent}    {$key}: {$preparedNewValue}";
                 case 'updated':
-                    $formattedOldValue = prepareValue($oldValue, $depth);
-                    $formattedNewValue = prepareValue($newValue, $depth);
-                    $addedString = "{$indent}  + {$key}: {$formattedNewValue}";
-                    $deletedString = "{$indent}  - {$key}: {$formattedOldValue}";
-                    return implode("\n", [$deletedString, $addedString]);
+                    $preparedOldValue = prepareValue($oldValue, $depth);
+                    $preparedNewValue = prepareValue($newValue, $depth);
+                    $addedLine = "{$indent}  + {$key}: {$preparedNewValue}";
+                    $deletedLine = "{$indent}  - {$key}: {$preparedOldValue}";
+                    return implode("\n", [$deletedLine, $addedLine]);
                 default:
                     throw new \Exception("This type: {$type} is not supported.");
             };
@@ -60,13 +60,13 @@ function prepareValue($value, int $depth): string
     $keys = array_keys(get_object_vars($value));
     $indent = makeIndent($depth);
 
-    $result = array_map(function ($key) use ($value, $depth, $indent): string {
-        $childValue = prepareValue($value->$key, $depth + 1);
-            return "{$indent}    {$key}: {$childValue}";
+    $lines = array_map(function ($key) use ($value, $depth, $indent): string {
+        $childrenValue = prepareValue($value->$key, $depth + 1);
+            return "{$indent}    {$key}: {$childrenValue}";
     }, $keys);
 
-    $formattedData = implode("\n", $result);
-    return "{\n{$formattedData}\n{$indent}}";
+    $preparedValue = implode("\n", $lines);
+    return "{\n{$preparedValue}\n{$indent}}";
 }
 
 function makeIndent(int $depth): string

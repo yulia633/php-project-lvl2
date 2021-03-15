@@ -22,16 +22,16 @@ function format(array $diff): string
                 case 'complex':
                     return $iter($children, [...$ancestors, $key]);
                 case 'added':
-                    $formattedNewValue = prepareValue($newValue);
-                    return "Property '{$pathToProperty}' was added with value: {$formattedNewValue}";
+                    $preparedNewValue = prepareValue($newValue);
+                    return "Property '{$pathToProperty}' was added with value: {$preparedNewValue}";
                 case 'removed':
                     return "Property '{$pathToProperty}' was removed";
                 case 'unchanged':
                     return [];
                 case 'updated':
-                    $formattedOldValue = prepareValue($oldValue);
-                    $formattedNewValue = prepareValue($newValue);
-                    return "Property '{$pathToProperty}' was updated. From {$formattedOldValue} to {$formattedNewValue}";
+                    $preparedOldValue = prepareValue($oldValue);
+                    $preparedNewValue = prepareValue($newValue);
+                    return "Property '{$pathToProperty}' was updated. From {$preparedOldValue} to {$preparedNewValue}";
                 default:
                     throw new \Exception("This type: {$type} is not supported.");
             }
@@ -48,7 +48,7 @@ function prepareValue($value): string
     if (is_null($value)) {
         return 'null';
     }
-    if (is_array($value) || is_object($value)) {
+    if (is_object($value)) {
         return '[complex value]';
     }
     if (is_string($value)) {
